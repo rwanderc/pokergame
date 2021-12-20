@@ -1,0 +1,6 @@
+*.log
+hs_err_pid*
+**/target
+**/logs
+**/.idea
+**/*.iml
