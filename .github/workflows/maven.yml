@@ -29,4 +29,4 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
       - name: Build and test project
-        run: mvn -s .m2/settings.xml clean verify
+        run: mvn clean verify
