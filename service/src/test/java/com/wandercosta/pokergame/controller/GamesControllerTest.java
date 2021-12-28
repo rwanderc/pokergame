@@ -32,7 +32,7 @@ class GamesControllerTest {
     private ObjectMapper mapper;
 
     @Test
-    void shouldCreateGame() throws Exception {
+    void shouldCreateAndRetrieveGame() throws Exception {
         final PokerGameCreateRequest dto = new PokerGameCreateRequest();
         dto.setName("some-name");
         dto.setDescription("some-description");
