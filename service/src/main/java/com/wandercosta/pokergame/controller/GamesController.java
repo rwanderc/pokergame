@@ -45,6 +45,7 @@ public class GamesController {
         this.cookiesProperties = cookiesProperties;
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(produces = "application/json")
     public PokerGame createGame(@RequestBody final PokerGameCreateRequest dto) {
         final PokerGame pokerGame = gameFactory.build(dto);
@@ -61,15 +62,21 @@ public class GamesController {
         return gameService.close(uuid);
     }
 
+    @GetMapping(path = "{gameUUID}/votes", produces = "application/json")
+    public ResponseEntity<PokerGameVote> getVote(@PathVariable final String gameUUID,
+                                                 @CookieValue(value = VOTER_UUID_COOKIE_NAME, required = false) final String tmpVoterUUID,
+                                                 final HttpServletResponse response) {
+        final String voterUUID = generateVoterUUID(tmpVoterUUID, response);
+        final PokerGameVote existingVote = voteService.get(gameUUID, voterUUID);
+        return ResponseEntity.ok(existingVote);
+    }
+
     @PostMapping(path = "{gameUUID}/votes", produces = "application/json")
     public ResponseEntity<PokerGameVote> voteGame(@PathVariable final String gameUUID,
                                                   @RequestBody final PokerGameVoteRequest dto,
                                                   @CookieValue(value = VOTER_UUID_COOKIE_NAME, required = false) final String tmpVoterUUID,
                                                   final HttpServletResponse response) {
-        final String voterUUID = tmpVoterUUID != null && !tmpVoterUUID.isEmpty()
-                ? tmpVoterUUID : UUID.randomUUID().toString();
-        response.addCookie(createCookie(voterUUID));
-
+        final String voterUUID = generateVoterUUID(tmpVoterUUID, response);
         final PokerGame game = gameService.getOpen(gameUUID);
         final String voteUUID = voteService.find(gameUUID, voterUUID)
                 .map(PokerGameVote::getUuid)
@@ -78,6 +85,14 @@ public class GamesController {
         final PokerGameVote vote = voteFactory.build(dto, voteUUID, voterUUID, game);
         final PokerGameVote savedVote = voteService.save(vote);
         return ResponseEntity.ok(savedVote);
+    }
+
+    private String generateVoterUUID(final String cookieVoterUUID,
+                                     final HttpServletResponse response) {
+        final String voterUUID = cookieVoterUUID != null && !cookieVoterUUID.isEmpty()
+                ? cookieVoterUUID : UUID.randomUUID().toString();
+        response.addCookie(createCookie(voterUUID));
+        return voterUUID;
     }
 
     private Cookie createCookie(final String voterUUID) {

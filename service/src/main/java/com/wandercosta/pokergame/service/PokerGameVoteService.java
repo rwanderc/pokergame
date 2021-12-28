@@ -1,6 +1,7 @@
 package com.wandercosta.pokergame.service;
 
 import com.wandercosta.pokergame.domain.PokerGameVote;
+import com.wandercosta.pokergame.exception.EntityNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -21,5 +22,11 @@ public class PokerGameVoteService {
     public Optional<PokerGameVote> find(final String gameUUID,
                                         final String voterUUID) {
         return repository.findByGame_UuidAndVoterUuid(gameUUID, voterUUID);
+    }
+
+    public PokerGameVote get(final String gameUUID,
+                             final String voterUUID) {
+        return repository.findByGame_UuidAndVoterUuid(gameUUID, voterUUID)
+                .orElseThrow(() -> new EntityNotFoundException("Vote not found"));
     }
 }
