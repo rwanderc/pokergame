@@ -12,7 +12,7 @@ CREATE TABLE poker_game_votes
 CREATE TABLE poker_games
   (
      uuid           VARCHAR(64) NOT NULL,
-     allowed_points VARCHAR(128) NOT NULL,
+     allowed_points VARCHAR(255) NOT NULL,
      closed_at      TIMESTAMP,
      created_at     TIMESTAMP NOT NULL,
      description    VARCHAR(255),

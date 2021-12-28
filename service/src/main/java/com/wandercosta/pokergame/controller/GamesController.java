@@ -45,6 +45,7 @@ public class GamesController {
         this.cookiesProperties = cookiesProperties;
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(produces = "application/json")
     public PokerGame createGame(@RequestBody final PokerGameCreateRequest dto) {
         final PokerGame pokerGame = gameFactory.build(dto);

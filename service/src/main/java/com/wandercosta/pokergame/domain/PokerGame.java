@@ -14,10 +14,8 @@ import java.util.Set;
 @Table(name = "poker_games")
 public class PokerGame {
 
-    public static final int ID_LENGTH = 64;
-
     @Id
-    @Column(length = ID_LENGTH)
+    @Column(length = 64)
     private String uuid;
 
     @Column(length = 64)
@@ -35,7 +33,7 @@ public class PokerGame {
     @Column(nullable = false)
     private Instant expiresAt;
 
-    @Column(nullable = false, length = 128)
+    @Column(nullable = false)
     @Convert(converter = CommaSeparatedSetAttributeConverter.class)
     private Set<Float> allowedPoints;
 
